@@ -9,8 +9,8 @@ import java.awt.geom.AffineTransform;
 public class Car
 {
 	Main ref;
-	double maxForwardVel = -15;
-	double maxBackwardVel = 10;
+	double maxForwardVel = -10;
+	double maxBackwardVel = 7;
 	double xP;
 	double vel = 0;
 	double acc = 0;
@@ -105,7 +105,7 @@ public class Car
 			thetaVel = thetaVel + thetaAcc * t;
 		} else
 		{
-			thetaVel = thetaVel * (1 - t);
+			thetaVel = thetaVel * (1 - t * 2);
 		}
 		if (thetaVel > maxThetaVel)
 		{
