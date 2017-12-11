@@ -9,8 +9,8 @@ import java.awt.geom.AffineTransform;
 public class Car
 {
 	Main ref;
-	double maxForwardAccel = -10;
-	double maxBackwardAccel = 10;
+	double maxForwardVel = -15;
+	double maxBackwardVel = 10;
 	double xP;
 	double vel = 0;
 	double acc = 0;
@@ -18,18 +18,20 @@ public class Car
 	double theta;
 	double thetaVel = 0;
 	double thetaAcc = 0;
+	double maxThetaVel = 60;
 	int len = 60;
 	int wid = 32;
 	Color theC;
-	public Car( double xpos, double ypos, double initdegree, Main main, Color color )
+
+	public Car(double xpos, double ypos, double initdegree, Main main, Color color)
 	{
 		xP = xpos;
 		yP = ypos;
 		theta = initdegree;
-		ref = main; 
+		ref = main;
 		theC = color;
 	}
-	
+
 	public void onCol()
 	{
 		vel = 0;
@@ -37,97 +39,127 @@ public class Car
 		thetaVel = 0;
 		thetaAcc = 0;
 	}
-	
+
 	public boolean checkpoint(double x, double y)
 	{
 		for (int z = 0; z < ref.map.obsticals.length; z++)
 		{
-		if (x > ref.map.obsticals[z][0] && x < ref.map.obsticals[z][0] + ref.map.obsticals[z][2] && y > ref.map.obsticals[z][1] && y < ref.map.obsticals[z][1] + ref.map.obsticals[z][3])
-		{
-			return true;
-		}
-		if (x < 0)
-		{
-			return true;
-		}
-		if (y < 0)
-		{
-			return true;
-		}
-		if (y > 760)
-		{
-			return true;
-		}
-		if (x > 785)
-		{
-			return true;
-		}
+			if (x > ref.map.obsticals[z][0] && x < ref.map.obsticals[z][0] + ref.map.obsticals[z][2]
+					&& y > ref.map.obsticals[z][1] && y < ref.map.obsticals[z][1] + ref.map.obsticals[z][3])
+			{
+				resetVelocitys();
+				return true;
+			}
+			if (x < 0)
+			{
+				resetVelocitys();
+				return true;
+			}
+			if (y < 0)
+			{
+				resetVelocitys();
+				return true;
+			}
+			if (y > 760)
+			{
+				resetVelocitys();
+				return true;
+			}
+			if (x > 785)
+			{
+				resetVelocitys();
+				return true;
+			}
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Resets the car's angular and vertical velocity.
+	 */
+	public void resetVelocitys()
+	{
+		thetaVel = 0;
+		vel = 0;
+	}
+
 	public void moveTick(double t)
 	{
-		vel = vel + acc * t; 
-		if (vel > 10)
+		if (acc != 0)
 		{
-			vel = 10;
+			vel = vel + acc * t;
+		} else
+		{
+			vel = vel * (1 - t);
 		}
-		if (vel < -10)
+		if (vel > maxBackwardVel)
 		{
-			vel = -10;
+			vel = maxBackwardVel;
 		}
-		thetaVel = thetaVel + thetaAcc * t; 
-		if (thetaVel > 60)
+		if (vel < maxForwardVel)
 		{
-			thetaVel = 60;
+			vel = maxForwardVel;
 		}
-		if (thetaVel < -60)
+		if (thetaAcc != 0)
 		{
-			thetaVel = -60;
+			thetaVel = thetaVel + thetaAcc * t;
+		} else
+		{
+			thetaVel = thetaVel * (1 - t);
+		}
+		if (thetaVel > maxThetaVel)
+		{
+			thetaVel = maxThetaVel;
+		}
+		if (thetaVel < -maxThetaVel)
+		{
+			thetaVel = -maxThetaVel;
 		}
 		theta = theta + thetaVel * t;
-		xP = xP - vel * Math.sin(Math.toRadians(theta)); 
-		yP = yP + vel * Math.cos(Math.toRadians(theta)); 
-		
-		if (checkpoint(xP + Math.cos(Math.toRadians(theta)) * wid/2 - Math.sin(Math.toRadians(theta)) * len/2, yP + Math.sin(Math.toRadians(theta)) * wid/2 + Math.cos(Math.toRadians(theta)) * len/2 ))
+		xP = xP - vel * Math.sin(Math.toRadians(theta));
+		yP = yP + vel * Math.cos(Math.toRadians(theta));
+
+		if (checkpoint(xP + Math.cos(Math.toRadians(theta)) * wid / 2 - Math.sin(Math.toRadians(theta)) * len / 2,
+				yP + Math.sin(Math.toRadians(theta)) * wid / 2 + Math.cos(Math.toRadians(theta)) * len / 2))
 		{
 			theta = theta - thetaVel * t;
-			xP = xP + vel * Math.sin(Math.toRadians(theta)); 
-			yP = yP - vel * Math.cos(Math.toRadians(theta)); 
-		}
-		else if (checkpoint(xP -( Math.cos(Math.toRadians(theta)) * wid/2 - Math.sin(Math.toRadians(theta)) * len/2), yP - (Math.sin(Math.toRadians(theta)) * wid/2 + Math.cos(Math.toRadians(theta)) * len/2 )))
+			xP = xP + vel * Math.sin(Math.toRadians(theta));
+			yP = yP - vel * Math.cos(Math.toRadians(theta));
+		} else if (checkpoint(
+				xP - (Math.cos(Math.toRadians(theta)) * wid / 2 - Math.sin(Math.toRadians(theta)) * len / 2),
+				yP - (Math.sin(Math.toRadians(theta)) * wid / 2 + Math.cos(Math.toRadians(theta)) * len / 2)))
 		{
 			theta = theta - thetaVel * t;
-			xP = xP + vel * Math.sin(Math.toRadians(theta)); 
-			yP = yP - vel * Math.cos(Math.toRadians(theta)); 
-		}
-		else if (checkpoint(xP + ( Math.cos(Math.toRadians(theta)) * wid/2 + Math.sin(Math.toRadians(theta)) * len/2), yP + (Math.sin(Math.toRadians(theta)) * wid/2 - Math.cos(Math.toRadians(theta)) * len/2 )))
+			xP = xP + vel * Math.sin(Math.toRadians(theta));
+			yP = yP - vel * Math.cos(Math.toRadians(theta));
+		} else if (checkpoint(
+				xP + (Math.cos(Math.toRadians(theta)) * wid / 2 + Math.sin(Math.toRadians(theta)) * len / 2),
+				yP + (Math.sin(Math.toRadians(theta)) * wid / 2 - Math.cos(Math.toRadians(theta)) * len / 2)))
 		{
 			theta = theta - thetaVel * t;
-			xP = xP + vel * Math.sin(Math.toRadians(theta)); 
-			yP = yP - vel * Math.cos(Math.toRadians(theta)); 
-		}
-		else if (checkpoint(xP -( Math.cos(Math.toRadians(theta)) * wid/2 + Math.sin(Math.toRadians(theta)) * len/2), yP - (Math.sin(Math.toRadians(theta)) * wid/2 - Math.cos(Math.toRadians(theta)) * len/2 )))
+			xP = xP + vel * Math.sin(Math.toRadians(theta));
+			yP = yP - vel * Math.cos(Math.toRadians(theta));
+		} else if (checkpoint(
+				xP - (Math.cos(Math.toRadians(theta)) * wid / 2 + Math.sin(Math.toRadians(theta)) * len / 2),
+				yP - (Math.sin(Math.toRadians(theta)) * wid / 2 - Math.cos(Math.toRadians(theta)) * len / 2)))
 		{
 			theta = theta - thetaVel * t;
-			xP = xP + vel * Math.sin(Math.toRadians(theta)); 
-			yP = yP - vel * Math.cos(Math.toRadians(theta)); 
+			xP = xP + vel * Math.sin(Math.toRadians(theta));
+			yP = yP - vel * Math.cos(Math.toRadians(theta));
 		}
-		System.out.println(xP + " " + yP);
 	}
-	
+
 	public void drawMe(Graphics g)
 	{
 		g.setColor(theC);
-        Graphics2D g2d = (Graphics2D)g;
-        AffineTransform old = g2d.getTransform();
-        g2d.translate((int)xP, (int)yP);
-        g2d.rotate(Math.toRadians(theta));
-        Rectangle rect2 = new Rectangle((int)(- wid/2),(int)(-len/2), wid, len);
-        g2d.draw(rect2);
-        g2d.fill(rect2);
-        g2d.setTransform(old);
-        g.setColor(Color.GRAY);
+		Graphics2D g2d = (Graphics2D) g;
+		AffineTransform old = g2d.getTransform();
+		g2d.translate((int) xP, (int) yP);
+		g2d.rotate(Math.toRadians(theta));
+		Rectangle rect2 = new Rectangle((int) (-wid / 2), (int) (-len / 2), wid, len);
+		g2d.draw(rect2);
+		g2d.fill(rect2);
+		g2d.setTransform(old);
+		g.setColor(Color.GRAY);
 	}
 }

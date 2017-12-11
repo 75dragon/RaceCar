@@ -90,19 +90,15 @@ public class KeyListen implements KeyListener
                 break;
             case KeyEvent.VK_A:
             	ref.drivers[1].thetaAcc = 0;
-            	ref.drivers[1].thetaVel = 0;
                 break;
             case KeyEvent.VK_W:
-            	ref.drivers[1].acc = 0;
-            	ref.drivers[1].vel = 0;
+            	ref.drivers[1].acc = 0;   	
                 break;
             case KeyEvent.VK_D:
                 ref.drivers[1].thetaAcc = 0;
-                ref.drivers[1].thetaVel = 0;
                 break;
             case KeyEvent.VK_S:
             	ref.drivers[1].acc = 0;
-                ref.drivers[1].vel = 0;
                 break;
             case KeyEvent.VK_F:
             	ref.drivers[2].thetaAcc = 0;
