@@ -9,6 +9,8 @@ import java.awt.geom.AffineTransform;
 public class Car
 {
 	Main ref;
+	double maxForwardAccel = -10;
+	double maxBackwardAccel = 10;
 	double xP;
 	double vel = 0;
 	double acc = 0;
@@ -16,8 +18,8 @@ public class Car
 	double theta;
 	double thetaVel = 0;
 	double thetaAcc = 0;
-	int len = 30;
-	int wid = 16;
+	int len = 60;
+	int wid = 32;
 	Color theC;
 	public Car( double xpos, double ypos, double initdegree, Main main, Color color )
 	{
@@ -56,7 +58,7 @@ public class Car
 		{
 			return true;
 		}
-		if (x > 760)
+		if (x > 785)
 		{
 			return true;
 		}
@@ -67,13 +69,13 @@ public class Car
 	public void moveTick(double t)
 	{
 		vel = vel + acc * t; 
-		if (vel > 5)
+		if (vel > 10)
 		{
-			vel = 5;
+			vel = 10;
 		}
-		if (vel < -5)
+		if (vel < -10)
 		{
-			vel = -5;
+			vel = -10;
 		}
 		thetaVel = thetaVel + thetaAcc * t; 
 		if (thetaVel > 60)
@@ -88,23 +90,27 @@ public class Car
 		xP = xP - vel * Math.sin(Math.toRadians(theta)); 
 		yP = yP + vel * Math.cos(Math.toRadians(theta)); 
 		
-		if (checkpoint(xP + Math.sin(theta) * wid/2 - Math.sin(theta) * len/2, yP + Math.sin(theta) * wid/2 + Math.cos(theta) * len/2 ))
+		if (checkpoint(xP + Math.cos(Math.toRadians(theta)) * wid/2 - Math.sin(Math.toRadians(theta)) * len/2, yP + Math.sin(Math.toRadians(theta)) * wid/2 + Math.cos(Math.toRadians(theta)) * len/2 ))
 		{
+			theta = theta - thetaVel * t;
 			xP = xP + vel * Math.sin(Math.toRadians(theta)); 
 			yP = yP - vel * Math.cos(Math.toRadians(theta)); 
 		}
-		else if (checkpoint(xP -( Math.sin(theta) * wid/2 - Math.sin(theta) * len/2), yP - (Math.sin(theta) * wid/2 + Math.cos(theta) * len/2 )))
+		else if (checkpoint(xP -( Math.cos(Math.toRadians(theta)) * wid/2 - Math.sin(Math.toRadians(theta)) * len/2), yP - (Math.sin(Math.toRadians(theta)) * wid/2 + Math.cos(Math.toRadians(theta)) * len/2 )))
 		{
+			theta = theta - thetaVel * t;
 			xP = xP + vel * Math.sin(Math.toRadians(theta)); 
 			yP = yP - vel * Math.cos(Math.toRadians(theta)); 
 		}
-		else if (checkpoint(xP + ( Math.sin(theta) * wid/2 + Math.sin(theta) * len/2), yP + (Math.sin(theta) * wid/2 - Math.cos(theta) * len/2 )))
+		else if (checkpoint(xP + ( Math.cos(Math.toRadians(theta)) * wid/2 + Math.sin(Math.toRadians(theta)) * len/2), yP + (Math.sin(Math.toRadians(theta)) * wid/2 - Math.cos(Math.toRadians(theta)) * len/2 )))
 		{
+			theta = theta - thetaVel * t;
 			xP = xP + vel * Math.sin(Math.toRadians(theta)); 
 			yP = yP - vel * Math.cos(Math.toRadians(theta)); 
 		}
-		else if (checkpoint(xP -( Math.sin(theta) * wid/2 - Math.sin(theta) * len/2), yP - (Math.sin(theta) * wid/2 + Math.cos(theta) * len/2 )))
+		else if (checkpoint(xP -( Math.cos(Math.toRadians(theta)) * wid/2 + Math.sin(Math.toRadians(theta)) * len/2), yP - (Math.sin(Math.toRadians(theta)) * wid/2 - Math.cos(Math.toRadians(theta)) * len/2 )))
 		{
+			theta = theta - thetaVel * t;
 			xP = xP + vel * Math.sin(Math.toRadians(theta)); 
 			yP = yP - vel * Math.cos(Math.toRadians(theta)); 
 		}
@@ -122,5 +128,6 @@ public class Car
         g2d.draw(rect2);
         g2d.fill(rect2);
         g2d.setTransform(old);
+        g.setColor(Color.GRAY);
 	}
 }
