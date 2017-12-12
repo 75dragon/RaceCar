@@ -47,27 +47,22 @@ public class Car
 			if (x > ref.map.obsticals[z][0] && x < ref.map.obsticals[z][0] + ref.map.obsticals[z][2]
 					&& y > ref.map.obsticals[z][1] && y < ref.map.obsticals[z][1] + ref.map.obsticals[z][3])
 			{
-				resetVelocitys();
 				return true;
 			}
 			if (x < 0)
 			{
-				resetVelocitys();
 				return true;
 			}
 			if (y < 0)
 			{
-				resetVelocitys();
 				return true;
 			}
 			if (y > 760)
 			{
-				resetVelocitys();
 				return true;
 			}
 			if (x > 785)
 			{
-				resetVelocitys();
 				return true;
 			}
 		}
@@ -125,6 +120,7 @@ public class Car
 			theta = theta - thetaVel * t;
 			xP = xP + vel * Math.sin(Math.toRadians(theta));
 			yP = yP - vel * Math.cos(Math.toRadians(theta));
+			resetVelocitys();
 		} else if (checkpoint(
 				xP - (Math.cos(Math.toRadians(theta)) * wid / 2 - Math.sin(Math.toRadians(theta)) * len / 2),
 				yP - (Math.sin(Math.toRadians(theta)) * wid / 2 + Math.cos(Math.toRadians(theta)) * len / 2)))
@@ -132,6 +128,7 @@ public class Car
 			theta = theta - thetaVel * t;
 			xP = xP + vel * Math.sin(Math.toRadians(theta));
 			yP = yP - vel * Math.cos(Math.toRadians(theta));
+			resetVelocitys();
 		} else if (checkpoint(
 				xP + (Math.cos(Math.toRadians(theta)) * wid / 2 + Math.sin(Math.toRadians(theta)) * len / 2),
 				yP + (Math.sin(Math.toRadians(theta)) * wid / 2 - Math.cos(Math.toRadians(theta)) * len / 2)))
@@ -139,6 +136,7 @@ public class Car
 			theta = theta - thetaVel * t;
 			xP = xP + vel * Math.sin(Math.toRadians(theta));
 			yP = yP - vel * Math.cos(Math.toRadians(theta));
+			resetVelocitys();
 		} else if (checkpoint(
 				xP - (Math.cos(Math.toRadians(theta)) * wid / 2 + Math.sin(Math.toRadians(theta)) * len / 2),
 				yP - (Math.sin(Math.toRadians(theta)) * wid / 2 - Math.cos(Math.toRadians(theta)) * len / 2)))
@@ -146,6 +144,7 @@ public class Car
 			theta = theta - thetaVel * t;
 			xP = xP + vel * Math.sin(Math.toRadians(theta));
 			yP = yP - vel * Math.cos(Math.toRadians(theta));
+			resetVelocitys();
 		}
 	}
 
